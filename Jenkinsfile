@@ -15,23 +15,25 @@ pipeline {
    
     stages {
 
-    // Building Docker images
-    stage('Building image') {
-      steps {
-         sh """
-            docker build -t project3 .
-	"""
+    // Tests
+    stage('Unit Tests') {
+      steps{
+        script {
+          sh 'npm install'
+	  sh 'npm test -- --watchAll=false'
         }
       }
-
-    // Run Docker Image
-   stage('Run') {
-	steps {
-	sh """
-           docker run -rm project3
-        """
+    }
+        
+    // Building Docker images
+    stage('Building image') {
+      steps{
+        script {
+          dockerImage = docker.build "${IMAGE_REPO_NAME}:${IMAGE_TAG}"
+        }
       }
-   }
+    }
+   
     // Uploading Docker images into AWS ECR
     stage('Pushing to ECR') {
      steps{  
