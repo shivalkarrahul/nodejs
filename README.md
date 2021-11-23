@@ -25,3 +25,5 @@ Push the image to ECR
 Deploy the image
 
 Notes
+
+New line
