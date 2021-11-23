@@ -1,7 +1,7 @@
 {
-  "name": "nodejs-template-1.0",
+  "name": "docker_nodejs_app",
   "version": "1.0.0",
-  "description": "nodejs-template-1.0",
+  "description": "a NodeJS app in Docker",
   "main": "server.js",
   "scripts": {
     "test": "jest ./src/test",
