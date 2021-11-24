@@ -53,14 +53,6 @@ pipeline {
                 }
             } 
         }
-     stage('Run Image') {
-      steps{
-       sh '''
-          docker run -i -v --rm "${IMAGE_REPO_NAME}:${IMAGE_TAG}"
-       '''
-       }
-     }
-
       }      
       
     }
