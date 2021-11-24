@@ -39,8 +39,8 @@ pipeline {
      steps{  
          script {
 			docker.withRegistry("https://" + REPOSITORY_URI, "ecr:${AWS_DEFAULT_REGION}:" + registryCredential) {
-                    	dockerImage.push()
-                	}
+                    dockerImage.push()
+                }
          }
         }
       }
@@ -53,6 +53,13 @@ pipeline {
                 }
             } 
         }
+     stage('Run Image') {
+      steps{
+       sh '''
+          docker run -i -v --rm "${IMAGE_REPO_NAME}:${IMAGE_TAG}"
+       }
+     }
+
       }      
       
     }
