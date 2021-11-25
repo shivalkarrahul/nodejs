@@ -1,21 +1,32 @@
-ROLE_ARN=`aws ecs describe-task-definition --task-definition "${TASK_DEFINITION_NAME}" --region "${AWS_DEFAULT_REGION}" | jq .taskDefinition.executionRoleArn`
-echo "ROLE_ARN= " $ROLE_ARN
+#!/bin/bash
 
-FAMILY=`aws ecs describe-task-definition --task-definition "${TASK_DEFINITION_NAME}" --region "${AWS_DEFAULT_REGION}" | jq .taskDefinition.family`
-echo "FAMILY= " $FAMILY
+set -euo pipefail
 
-NAME=`aws ecs describe-task-definition --task-definition "${TASK_DEFINITION_NAME}" --region "${AWS_DEFAULT_REGION}" | jq .taskDefinition.containerDefinitions[].name`
-echo "NAME= " $NAME
+# ROLE_ARN=$(aws ecs describe-task-definition --task-definition "${TASK_DEFINITION_NAME}" --region "${AWS_DEFAULT_REGION}" | jq -r .taskDefinition.executionRoleArn)
+ROLE_ARN="arn:aws:iam::767657561355:role/ecsTaskExecutionRole"
+echo "ROLE_ARN: ${ROLE_ARN}"
 
-sed -i "s#BUILD_NUMBER#$IMAGE_TAG#g" task-definition.json
-sed -i "s#REPOSITORY_URI#$REPOSITORY_URI#g" task-definition.json
-sed -i "s#ROLE_ARN#$ROLE_ARN#g" task-definition.json
-sed -i "s#FAMILY#$FAMILY#g" task-definition.json
-sed -i "s#NAME#$NAME#g" task-definition.json
+# FAMILY=$(aws ecs describe-task-definition --task-definition "${TASK_DEFINITION_NAME}" --region "${AWS_DEFAULT_REGION}" | jq -r .taskDefinition.family)
+FAMILY="first-run-task-definition"
+echo "FAMILY: ${FAMILY}"
 
+# NAME=$(aws ecs describe-task-definition --task-definition "${TASK_DEFINITION_NAME}" --region "${AWS_DEFAULT_REGION}" | jq -r .taskDefinition.containerDefinitions[].name)
+NAME="project3-nodejs-container"
+echo "NAME: ${NAME}"
 
-aws ecs register-task-definition --cli-input-json file://task-definition.json --region="${AWS_DEFAULT_REGION}"
+task_json=$(cat task-template.json)
+task_json="${task_json//CI_BUILD_NUMBER/${IMAGE_TAG}}"
+task_json="${task_json//CI_REPOSITORY_URI/${REPOSITORY_URI}}"
+task_json="${task_json//CI_ROLE_ARN/${ROLE_ARN}}"
+task_json="${task_json//CI_FAMILY/${FAMILY}}"
+task_json="${task_json//CI_NAME/${NAME}}"
 
-REVISION=`aws ecs describe-task-definition --task-definition "${TASK_DEFINITION_NAME}" --region "${AWS_DEFAULT_REGION}" | jq .taskDefinition.revision`
-echo "REVISION= " "${REVISION}"
+echo "${task_json}" > task_definition.json
+
+# aws ecs register-task-definition --region="${AWS_DEFAULT_REGION}" --cli-input-json "${task_json}"
+aws ecs register-task-definition --region="${AWS_DEFAULT_REGION}" --cli-input-json "${task_json}"
+
+REVISION=$(aws ecs describe-task-definition --task-definition "${TASK_DEFINITION_NAME}" --region "${AWS_DEFAULT_REGION}" | jq -r .taskDefinition.revision)
+echo "REVISION: ${REVISION}"
+
 aws ecs update-service --cluster "${CLUSTER_NAME}" --service "${SERVICE_NAME}" --task-definition "${TASK_DEFINITION_NAME}":"${REVISION}" --desired-count "${DESIRED_COUNT}"

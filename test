@@ -1,0 +1,13 @@
+#!/bin/bash
+
+export AWS_ACCOUNT_ID="767657561355"
+export AWS_DEFAULT_REGION="eu-central-1" 
+export CLUSTER_NAME="project3"
+export SERVICE_NAME="project3-nodejs-container-service"
+export TASK_DEFINITION_NAME="first-run-task-definition"
+export DESIRED_COUNT="1"
+export IMAGE_REPO_NAME="capstone_project3_ecr_repository"
+export IMAGE_TAG="20"
+export REPOSITORY_URI="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}"
+
+./script.sh
