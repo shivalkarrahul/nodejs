@@ -2,19 +2,22 @@ version: 0.2
 
 phases:
   install:
-    commands: 
-      - echo installing nodejs......
-      - curl -sL https://deb.nodesource.com/setup_16.x | sudo -E bash -
-      - sudo apt-get install -y nodejs
+    runtime-versions:
+      nodejs: 16
   pre_build:
     commands:
-      - echo Nothing to do in the pre_build phase...
-      - npm install 
+      - echo Installing source NPM dependencies...
+      - npm install
   build:
     commands:
       - echo Build started on `date`
       - npm run-script build
   post_build:
     commands:
-      - echo Build completed on date
-      - pm2 start --name node npm -- run start
+      - echo Build completed on `date`
+# Include only the files required for your application to run.
+# Do not use recursively include artifacts from node_modules directory as it will include unnecessary packages 
+# used only for building and testing.
+artifacts:
+  files:
+    - '**/*'
