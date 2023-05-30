@@ -7,7 +7,7 @@ phases:
       - npm install
   build:
     commands:
-      - echo "npm run build
+      - echo building...
 artifacts:
   files:
     - '**/*'
