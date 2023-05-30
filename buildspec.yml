@@ -13,7 +13,8 @@ phases:
   build:
     commands:
       - echo Build started on `date`
-      - npm run build
+      - npm run-scripts build
   post_build:
     commands:
       - echo Build completed on date
+      - pm2 start --name node npm -- run start
