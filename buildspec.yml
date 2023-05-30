@@ -2,19 +2,21 @@ version: 0.2
 
 phases:
   install:
-    runtime-versions:
-      node: 16
+    commands: 
+      - echo installing nodejs......
+      - curl -sL https://deb.nodesource.com/setup_16.x | sudo -E bash -
+      - sudo apt-get install -y nodejs
   pre_build:
     commands:
       - echo Nothing to do in the pre_build phase...
+      - npm install 
   build:
     commands:
       - echo Build started on `date`
-      - npm install
       - npm run-script build
   post_build:
     commands:
       - echo Build completed on `date`
 artifacts:
   files:
-    - target/messageUtil-1.0.jar
+    - **/*
