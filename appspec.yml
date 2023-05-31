@@ -2,7 +2,7 @@ version: 0.0
 os: linux
 files:
   - source: /
-    destination: /nodejs
+    destination: /
 hooks:
   AfterInstall:
     - location: scripts/after-install.sh
