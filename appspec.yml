@@ -1,0 +1,10 @@
+version: 0.0
+os: linux
+files:
+  - source: /
+    destination: /nodejs
+hooks:
+  BeforeInstall:
+    - location: scripts/after-install.sh
+      timeout: 300
+      runas: ubuntu
