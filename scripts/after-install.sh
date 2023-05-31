@@ -1,5 +1,5 @@
 #! /bin/bash
-echo " running custom script.."
+echo " running custom script..."
 ## sudo su
 cd nodejs
 git pull origin dev
