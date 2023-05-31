@@ -1,10 +1,10 @@
 version: 0.0
 os: linux
 files:
-  - source: /home/ubuntu
-    destination:/home/ubuntu
+  - source: /
+    destination:/
 hooks:
   AfterInstall:
     - location: scripts/after-install.sh
       timeout: 300
-      runas: ubuntu
+      runas: root
